@@ -1,0 +1,57 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form method="post" asp-controller="Home" asp-action="Index">
+    <div class="container ">
+        <div class="row">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Кому?</label>
+                    <input class="form-control" asp-for="MessageToUser" list="nicknames">
+                    <datalist id="nicknames">
+                        @foreach (var user in Model.Users)
+                        {
+                            <option value="@user.UserName"></option>
+                        }
+                    </datalist>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Тема</label>
+                    <input class="form-control" asp-for="MessageTitle">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Сообщение</label>
+                    <textarea class="form-control" asp-for="Message"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </div>
+            <div class="col-6">
+                @if (Model.MessageForUser != null)
+                {
+                    <div class="accordion accordion-flush" id="messagesTable">
+                        @foreach (var message in Model.MessageForUser)
+                        {
+                            <div class="accordion-item">
+                                <p class="accordion-header" id="@("flush-heading" + message.Id)">
+                                    <label class="form-label">От: @(message.FromUser)</label>
+                                    <label class="form-label">Дата отправки: @(message.CreatedDate.ToShortTimeString())</label>
+                                    <button class="accordion-button btn-secondary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@("flush-collapse" + message.Id)" aria-expanded="false" aria-controls="@("flush-collapse" + message.Id)">
+                                        @(message.Title + "\n")
+                                    </button>
+                                </p>
+                                <div id="@("flush-collapse"+message.Id)" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">@message.Body</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="~/js/signalr.min.js"></script>
+<script src="~/js/index.js"></script>
