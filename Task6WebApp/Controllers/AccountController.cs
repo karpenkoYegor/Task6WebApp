@@ -9,15 +9,20 @@ using Task6WebApp.Data.Entities;
 using Task6WebApp.Data.Repository.Interfaces;
 using Task6WebApp.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.SignalR;
+using Task6WebApp.Hubs;
 
 namespace Task6WebApp.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IRepositoryWrapper _repository;
-        public AccountController(IRepositoryWrapper repository)
+        private readonly IHubContext<MessageHub> _messageHub;
+        public AccountController(IRepositoryWrapper repository,
+            IHubContext<MessageHub> messageHub)
         {
             _repository = repository;
+            _messageHub = messageHub;
         }
         // GET: AccountController
         public ActionResult Login()
@@ -44,6 +49,7 @@ namespace Task6WebApp.Controllers
                     };
                     _repository.User.Create(user);
                     _repository.Save();
+                    _messageHub.Clients.All.SendAsync("newUser", model.Login).GetAwaiter().GetResult();
                 }
                 return RedirectToAction("Index", "Home");
                 

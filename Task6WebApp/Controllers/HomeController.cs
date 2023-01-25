@@ -39,8 +39,15 @@ namespace Task6WebApp.Controllers
         [HttpPost]
         public IActionResult Index(IndexViewModel model)
         {
-            if(model.MessageToUser == null || model.Message == null || model.MessageTitle == null)
+            if(String.IsNullOrEmpty(model.MessageToUser) 
+               || String.IsNullOrEmpty(model.MessageTitle)
+               || String.IsNullOrEmpty(model.Message))
                 return RedirectToAction("Index");
+
+            if (_repository.User.GetByNickName(model.MessageToUser) is null)
+            {
+                return RedirectToAction("Index");
+            }
 
             var message = new Message()
             {
@@ -50,7 +57,10 @@ namespace Task6WebApp.Controllers
                 FromUser = User.Identity.Name,
                 CreatedDate = DateTime.Now
             };
-            CreateMessage(message, model.MessageToUser);
+            CreateMessage(message, model.MessageToUser, new List<string>()
+            {
+                new Guid().ToString(), message.FromUser, message.CreatedDate.ToShortTimeString(), message.Title, message.Body
+            });
             model = new IndexViewModel()
             {
                 Users = _repository.User.GetAllUsers(),
@@ -59,11 +69,11 @@ namespace Task6WebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public void CreateMessage(Message message, string user)
+        public void CreateMessage(Message message, string user, List<string> letter)
         {
             _repository.Message.Create(message);
             _repository.Save();
-            _messageHub.Clients.User(user).SendAsync("newMessage").GetAwaiter().GetResult();
+            _messageHub.Clients.User(user).SendAsync("newMessage", letter).GetAwaiter().GetResult();
         }
 
         public IActionResult Privacy()

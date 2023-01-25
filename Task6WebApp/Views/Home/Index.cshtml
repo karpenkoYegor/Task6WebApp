@@ -25,7 +25,7 @@
                     <label class="form-label">Сообщение</label>
                     <textarea class="form-control" asp-for="Message"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Отправить</button>
+                <button type="submit" class="btn btn-primary" id="sendBtn">Отправить</button>
             </div>
             <div class="col-6">
                 @if (Model.MessageForUser != null)
