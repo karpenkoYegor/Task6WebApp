@@ -59,7 +59,7 @@ namespace Task6WebApp.Controllers
             };
             CreateMessage(message, model.MessageToUser, new List<string>()
             {
-                new Guid().ToString(), message.FromUser, message.CreatedDate.ToShortTimeString(), message.Title, message.Body
+                DateTime.Now.ToLongTimeString().Replace(":",""), message.FromUser, message.CreatedDate.ToShortTimeString(), message.Title, message.Body
             });
             model = new IndexViewModel()
             {

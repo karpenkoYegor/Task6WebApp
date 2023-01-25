@@ -11,7 +11,7 @@ connection.on("newMessage", (data) => {
                                 <p class="accordion-header" id="flush-heading${data[0]}">
                                     <label class="form-label">От: ${data[1]}</label>
                                     <label class="form-label">Дата отправки: ${data[2]}</label>
-                                    <button class="accordion-button btn-secondary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@("flush-collapse${data[0]}")" aria-expanded="false" aria-controls="@("flush-collapse${data[0]}")">
+                                    <button class="accordion-button btn-secondary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse${data[0]}" aria-expanded="false" aria-controls="@("flush-collapse${data[0]}")">
                                         ${data[3]}
                                     </button>
                                 </p>
